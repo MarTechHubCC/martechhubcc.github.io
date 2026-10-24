@@ -6,7 +6,7 @@
 </head>
 <body>
 <title>Shivalik Fund II · Investor Survey</title>
-<meta name="cc-tool-version" content="V1.0 New Jersey">
+<meta name="cc-tool-version" content="V1.2 New Jersey">
 <meta name="cc-survey-version" content="10">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -533,10 +533,12 @@ h2{font-size:calc(clamp(28px,min(8.8vw,calc(var(--vh,1vh)*5)),42px)*var(--k))}
 .tcard{min-height:0;gap:calc(clamp(12px,calc(var(--vh,1vh)*2.4),22px)*var(--k))}
 .tcard .t-art{max-height:calc(var(--vh,1vh)*24)}
 .screen.measuring,.screen.measuring *{transform:none!important;translate:none!important;scale:none!important;transition:none!important}
+.screen.measuring .fx::before,.screen.measuring .fx::after{display:none!important}
 
 /* ── V09: one button size on every screen; no keyboard-following ── */
 .primary{height:56px!important;font-size:16px!important}
 .back{width:56px!important;height:56px!important}
+.back.hide{display:none!important}
 .row{border-radius:20px}
 </style>
 
@@ -753,15 +755,21 @@ document.addEventListener("pointerdown",function(e){
 /* ===== Q6 slider: rolling amount + tower ===== */
 var tower=$("tower"); for(var i=0;i<14;i++){var f=document.createElement("div");f.className="fl";tower.appendChild(f);}
 var lastT=TICKET_START;
+/* V1.1 — every number already on screen is sent away at once, so fast swipes
+   (an iPhone fires many in one frame) can never leave two numbers stacked */
 function setAmount(v,dir){
-  var box=$("amount"), old=box.querySelector("span.cur"), n=document.createElement("span");
+  var box=$("amount"), olds=[].slice.call(box.querySelectorAll("span")), n=document.createElement("span");
   n.className="cur"; n.textContent=TICKETS[v];
-  if(old && !REDUCE){n.style.transform="translateY("+(dir>0?55:-55)+"%)";n.style.opacity="0";}
+  olds.forEach(function(o){
+    o.classList.remove("cur");
+    if(REDUCE||!olds.length){o.remove();return;}
+    o.style.transform="translateY("+(dir>0?-55:55)+"%)"; o.style.opacity="0";
+    setTimeout(function(){ if(o.parentNode) o.remove(); },380);
+  });
+  while(box.children.length>2) box.removeChild(box.firstChild);
+  if(olds.length && !REDUCE){n.style.transform="translateY("+(dir>0?55:-55)+"%)";n.style.opacity="0";}
   box.appendChild(n);
-  requestAnimationFrame(function(){requestAnimationFrame(function(){
-    n.style.transform="";n.style.opacity="1";
-    if(old){old.classList.remove("cur");old.style.transform="translateY("+(dir>0?-55:55)+"%)";old.style.opacity="0";setTimeout(function(){old.remove();},380);}
-  });});
+  requestAnimationFrame(function(){requestAnimationFrame(function(){ if(n.classList.contains("cur")){n.style.transform="";n.style.opacity="1";} });});
 }
 function paintTower(v){
   var lit=2+Math.round(v*12/(TICKETS.length-1));
