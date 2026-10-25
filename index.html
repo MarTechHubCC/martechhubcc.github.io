@@ -6,7 +6,7 @@
 </head>
 <body>
 <title>Shivalik Fund II · Investor Survey</title>
-<meta name="cc-tool-version" content="V1.2 New Jersey">
+<meta name="cc-tool-version" content="V1.3 New Jersey">
 <meta name="cc-survey-version" content="10">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -879,8 +879,10 @@ function validReg1(){
 
 /* ===== Sending the entry (switched off while REVIEW is true) ===== */
 function lab(arr,id){var x=arr.find(function(o){return o.id===id;});return x?(x.label||x.title):id;}
+/* V1.3: MarTech's "Open a test survey" link (?test=1) marks the entry as a test: unlimited, never counted */
+var TEST_RUN=/[?&]test=1/.test(location.search);
 function entryPayload(){
-  return {name:S.name, mobile:S.mobile.replace(/\D/g,""), consent:true,
+  return {is_test:TEST_RUN, name:S.name, mobile:S.mobile.replace(/\D/g,""), consent:true,
     consent_text:"Captive audience at the Fund II investor meet; no consent screen (Chirag, 24 Oct 2026).",
     answers:{value:[lab(VALUES,S.value)], goal:[lab(GOALS,S.goal)], matters:[lab(MATTERS,S.matters)],
       model:[lab(MODELS,S.model)], challenges:S.challenges.map(function(id){return lab(CHALLENGES,id);}), ticket:[TICKETS[S.ticket]]}};
