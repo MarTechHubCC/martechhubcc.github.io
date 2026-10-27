@@ -6,7 +6,7 @@
 </head>
 <body>
 <title>Shivalik Fund II · Investor Survey</title>
-<meta name="cc-tool-version" content="V1.3 New Jersey">
+<meta name="cc-tool-version" content="V1.4 New Jersey">
 <meta name="cc-survey-version" content="10">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -539,6 +539,9 @@ h2{font-size:calc(clamp(28px,min(8.8vw,calc(var(--vh,1vh)*5)),42px)*var(--k))}
 .primary{height:56px!important;font-size:16px!important}
 .back{width:56px!important;height:56px!important}
 .back.hide{display:none!important}
+/* V1.4 (27 Oct 2026) — the name and mobile fields stay inside the screen */
+.fields{grid-template-columns:minmax(0,1fr)}
+.field{min-width:0}
 .row{border-radius:20px}
 </style>
 
