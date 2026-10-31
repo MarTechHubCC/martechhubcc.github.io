@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<meta name="cc-tool-version" content="V1.0 New Jersey">
+<meta name="color-scheme" content="only light">
+<meta name="theme-color" content="#fff8ee">
+<title>Links</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.31.0/dist/tabler-icons.min.css">
+<style>
+/* ═══ LinkDeck · Simple list · MarTech V4.6 New Jersey (31 Oct 2026)
+   The approved mockup 06. The screen is one grid of equal rows: logo 2,
+   photo 2, main button 2, one row per link, social icons 1. The page never
+   scrolls: links that do not fit go behind a More row, which opens a panel.
+   A pinned link never goes behind More. Every word, link and colour comes
+   from the page's setup in MarTech (ld_pages.config); the logo comes from
+   Client Centre's logo bank.
+     ?p=<slug>     the page
+     &test=1       taps are recorded as tests (works in any status)
+     ?preview=1    MarTech's setup preview: no database; draws what MarTech
+                   sends (ld-preview) and records nothing. */
+:root{--bg:#fff8ee;--tile:#fff;--line:#eadfcf;--ink:#1d1a17;--muted:#7a7066;--red:#B12028;--red-dk:#8e1820;--butter:#f6e7c8;
+  --gap:8px;--pad:14px;--units:11;color-scheme:only light}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  display:flex;justify-content:center;align-items:center;min-height:100dvh;-webkit-font-smoothing:antialiased;overscroll-behavior:none}
+body.loading .app,body.loading .gone{visibility:hidden}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;cursor:pointer}
+[hidden]{display:none!important}
+
+.app{width:min(100vw,480px);height:100dvh;
+  padding:calc(var(--pad) + env(safe-area-inset-top)) var(--pad) calc(var(--pad) + env(safe-area-inset-bottom));
+  display:grid;grid-template-rows:repeat(var(--units),minmax(0,1fr));gap:var(--gap);background:var(--bg);overflow:hidden;position:relative}
+@media(min-width:520px) and (min-height:600px){
+  body{background:#efe7da}
+  .app{height:min(860px,calc(100dvh - 48px));border-radius:32px;box-shadow:0 20px 50px rgba(60,30,10,.12)}
+}
+.u1{grid-row:span 1}.u2{grid-row:span 2}
+
+.tile{border-radius:18px;background:var(--tile);border:1px solid var(--line);position:relative;overflow:hidden;
+  display:flex;align-items:center;min-height:0;transition:transform .15s ease;animation:pop .45s cubic-bezier(.2,.8,.2,1) both}
+a.tile:active,button.tile:active,.soc a:active,.soc button:active{transform:scale(.97)}
+@keyframes pop{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.tile{animation:none}}
+
+/* logo: 2 units */
+.logo{flex-direction:column;justify-content:center;gap:8px;padding:0 18px;text-align:center}
+.logo img{height:46%;max-width:85%;object-fit:contain}
+.logo .nm{font-size:clamp(20px,6vw,26px);font-weight:700;letter-spacing:-.02em}
+.logo p{font-size:12.5px;color:var(--muted);letter-spacing:.02em;line-height:1.3}
+
+/* photo: 2 units */
+.photo{background:#f3e9dc center/cover no-repeat;border:none;align-items:flex-end}
+.photo::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 40%,rgba(0,0,0,.55))}
+.photo .cap{position:relative;z-index:1;color:#fff;font-weight:700;font-size:19px;padding:0 18px 14px}
+.badge{position:absolute;top:12px;left:14px;z-index:1;font-size:10px;font-weight:700;letter-spacing:.05em;
+  background:var(--butter);color:var(--red-dk);padding:4px 9px;border-radius:20px;text-transform:uppercase}
+
+/* link rows */
+.link{gap:12px;padding:0 16px;font-weight:600;font-size:15.5px;width:100%;text-align:left}
+.link .lb{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.link .ic{height:62%;max-height:44px;aspect-ratio:1;border-radius:12px;background:var(--butter);display:grid;place-items:center;flex:none}
+.link .ic i{font-size:19px;color:var(--red-dk)}
+.link .arr{margin-left:auto;font-size:20px;opacity:.45;flex:none}
+.order{background:var(--red);border-color:var(--red);color:#fff;font-size:19px;padding:0 20px}
+.order .ic{height:46%;max-height:56px;border-radius:15px;background:rgba(255,255,255,.18)}
+.order .ic i{color:#fff;font-size:24px}
+.order .arr{opacity:.85;font-size:24px}
+.more .ic{background:var(--ink)}
+.more .ic i{color:#fff}
+.more .count{margin-left:auto;font-size:12px;font-weight:700;background:var(--butter);color:var(--red-dk);padding:3px 9px;border-radius:20px}
+
+/* social: 1 unit split into columns */
+.soc{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;padding:0}
+.soc a,.soc button{height:100%;display:grid;place-items:center;border:0;background:none;transition:transform .15s ease}
+.soc > * + *{border-left:1px solid var(--line)!important}
+.soc i{font-size:25px;color:var(--red)}
+
+/* the More panel */
+.sheet-bg{position:fixed;inset:0;background:rgba(29,26,23,.45);opacity:0;pointer-events:none;transition:opacity .25s;z-index:5}
+.sheet{position:fixed;left:50%;bottom:0;width:min(100vw,480px);max-height:82dvh;transform:translate(-50%,105%);
+  transition:transform .32s cubic-bezier(.2,.8,.2,1);z-index:6;background:var(--bg);border-radius:24px 24px 0 0;
+  padding:10px var(--pad) calc(var(--pad) + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:var(--gap)}
+.sheet .grab{width:40px;height:5px;border-radius:5px;background:var(--line);margin:0 auto 4px}
+.sheet .head{display:flex;align-items:center;justify-content:space-between;font-weight:700;font-size:15px;padding:0 4px}
+.sheet .x{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:#fff;font-size:18px;line-height:1}
+.sheet .list{overflow-y:auto;display:flex;flex-direction:column;gap:var(--gap);padding-bottom:2px}
+.sheet .link{height:var(--rowh,58px);flex:none;animation:none}
+body.open .sheet-bg{opacity:1;pointer-events:auto}
+body.open .sheet{transform:translate(-50%,0)}
+
+/* test mark: a corner tag that takes no row */
+.test{position:fixed;top:calc(6px + env(safe-area-inset-top));right:8px;z-index:4;font-size:10px;font-weight:700;letter-spacing:.08em;
+  background:#4F7FD6;color:#fff;padding:3px 8px;border-radius:20px}
+
+/* closed / missing */
+.gone{width:min(100vw,480px);min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:32px;text-align:center}
+.gone img{max-width:62%;max-height:110px;object-fit:contain}
+.gone p{color:var(--muted);font-size:15px;line-height:1.5}
+</style>
+</head>
+<body class="loading">
+<main class="app" id="app" aria-live="polite"></main>
+<div class="gone" id="gone" hidden><img id="goneLogo" alt="" hidden><p id="goneText">This page is not available right now.</p></div>
+<span class="test" id="test" hidden>TEST</span>
+<div class="sheet-bg" id="sheetBg"></div>
+<div class="sheet" id="sheet" role="dialog" aria-label="More links">
+  <div class="grab"></div>
+  <div class="head"><span id="sheetTitle">More</span><button class="x" id="sheetX" aria-label="Close">×</button></div>
+  <div class="list" id="sheetList"></div>
+</div>
+
+<script>
+(function () {
+const SB_URL = "https://qsxldzqdjdplffxqdokd.supabase.co", SB_KEY = "sb_publishable_6ng_3jnvQbJUZifYTxmRrw_0yhCZuY9";
+const qs = new URLSearchParams(location.search);
+const SLUG = (qs.get("p") || "").toLowerCase().replace(/[^a-z0-9-]/g, ""), PREVIEW = qs.get("preview") === "1", TESTLINK = qs.get("test") === "1";
+const DEFAULTS = {"brand_name": "", "tagline": "", "colour": "#B12028", "photo_url": "", "photo_caption": "", "photo_badge": "", "photo_link": "", "main_label": "Order online", "main_url": "", "main_icon": "shopping-bag", "links": [], "social": {"instagram": "", "facebook": "", "youtube": "", "linkedin": "", "x": ""}, "wa_number": "", "wa_text": "Hi {brand}, I found you through your link page.", "more_label": "More", "more_title": "More from {brand}", "closed_text": "This page is not available right now."};
+const SOCIAL = [["instagram", "brand-instagram"], ["facebook", "brand-facebook"], ["youtube", "brand-youtube"], ["linkedin", "brand-linkedin"], ["x", "brand-x"]];
+const MIN = 52, FLOOR = 40;   /* the smallest comfortable row, the smallest allowed row */
+let C = Object.assign({}, DEFAULTS), TITLE = "", STATUS = "live", LOGO = "";
+const $ = (s) => document.getElementById(s);
+const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const fill = (t) => String(t || "").replace(/\{brand\}/g, C.brand_name || TITLE || "");
+const icon = (n) => '<i class="ti ti-' + esc(String(n || "link").replace(/[^a-z0-9-]/g, "")) + '"></i>';
+
+function rpc(fn, args, keep) {
+  return fetch(`${SB_URL}/rest/v1/rpc/${fn}`, { method: "POST", keepalive: !!keep,
+    headers: { apikey: SB_KEY, Authorization: "Bearer " + SB_KEY, "content-type": "application/json" }, body: JSON.stringify(args) })
+    .then(async (r) => { const j = await r.json().catch(() => null); if (!r.ok) throw new Error((j && (j.message || j.hint)) || "Something went wrong"); return j; });
+}
+function tap(key) { if (PREVIEW || !SLUG) return; rpc("ld_click", { p_slug: SLUG, p_key: key, p_test: TESTLINK }, true).catch(() => {}); }
+
+function href(l) {
+  if (l.type === "whatsapp") {
+    const n = String(C.wa_number || "").replace(/\D/g, "");
+    return n ? "https://wa.me/" + n + "?text=" + encodeURIComponent(fill(C.wa_text || "")) : "";
+  }
+  if (l.type === "call") { const n = String(l.url || C.wa_number || "").replace(/[^\d+]/g, ""); return n ? "tel:" + (n.startsWith("+") ? n : "+" + n) : ""; }
+  const u = String(l.url || "").trim();
+  return !u ? "" : /^(https?:|mailto:|tel:)/i.test(u) ? u : "https://" + u;
+}
+function shade(hex, f) {
+  const m = /^#?([0-9a-f]{6})$/i.exec(String(hex || "")); if (!m) return "";
+  const n = parseInt(m[1], 16), ch = (v) => Math.max(0, Math.min(255, Math.round(v * f)));
+  return "#" + [n >> 16, (n >> 8) & 255, n & 255].map((v) => ch(v).toString(16).padStart(2, "0")).join("");
+}
+
+/* ── draw ── */
+let links = [], fixed = 0;
+function row(l, cls) {
+  const h = href(l);
+  return `<a class="tile link u1${cls || ""}" href="${esc(h || "#")}" data-k="${esc(l.k)}"${h ? "" : ' aria-disabled="true"'}>`
+    + `<span class="ic">${icon(l.icon)}</span><span class="lb">${esc(l.label)}</span><span class="arr">›</span></a>`;
+}
+function paint() {
+  const col = /^#[0-9a-f]{6}$/i.test(C.colour || "") ? C.colour : DEFAULTS.colour;
+  document.documentElement.style.setProperty("--red", col);
+  document.documentElement.style.setProperty("--red-dk", shade(col, .8));
+  document.title = C.brand_name || TITLE || "Links";
+  links = (Array.isArray(C.links) ? C.links : []).filter((l) => l && String(l.label || "").trim());
+  const soc = SOCIAL.filter(([k]) => String((C.social || {})[k] || "").trim());
+  const parts = [];
+  parts.push(`<div class="tile logo u2" data-part="logo">${LOGO ? `<img src="${esc(LOGO)}" alt="${esc(C.brand_name || TITLE)}">` : `<span class="nm">${esc(C.brand_name || TITLE)}</span>`}`
+    + (C.tagline ? `<p>${esc(C.tagline)}</p>` : "") + `</div>`);
+  fixed = 2;
+  if (C.photo_url) {
+    parts.push(`<a class="tile photo u2" data-part="photo" data-k="photo" href="${esc(href({ url: C.photo_link }) || "#")}" style="background-image:url('${esc(C.photo_url).replace(/'/g, "%27")}')">`
+      + (C.photo_badge ? `<span class="badge">${esc(C.photo_badge)}</span>` : "") + (C.photo_caption ? `<span class="cap">${esc(C.photo_caption)}</span>` : "") + `</a>`);
+    fixed += 2;
+  }
+  if (String(C.main_label || "").trim()) {
+    parts.push(row({ k: "main", label: C.main_label, url: C.main_url, icon: C.main_icon || "shopping-bag" }, " order u2").replace("u1 order u2", "order u2"));
+    fixed += 2;
+  }
+  links.forEach((l) => parts.push(row(l)));
+  parts.push(`<button class="tile link u1 more" id="more" type="button" data-k="more" hidden><span class="ic">${icon("layout-grid")}</span><span class="lb">${esc(C.more_label || "More")}</span><span class="count" id="moreCount"></span></button>`);
+  {  /* the social row always shows: Share is always there */
+    parts.push(`<div class="tile soc u1" data-part="social">` + soc.map(([k, ic]) => `<a href="${esc(href({ url: C.social[k] }))}" data-k="s:${k}" aria-label="${k}">${icon(ic)}</a>`).join("")
+      + `<button type="button" id="share" data-k="s:share" aria-label="Share">${icon("share")}</button></div>`);
+    fixed += 1;
+  }
+  $("app").innerHTML = parts.join("");
+  $("sheetTitle").textContent = fill(C.more_title || "More");
+  $("more").addEventListener("click", open);
+  $("share").addEventListener("click", share);
+  fit();
+}
+
+/* fill the screen: as many link rows as fit; if not all, the last row is More.
+   A pinned link is shown before any unpinned one; rows keep their order.
+   On a very short screen (a phone held sideways) the photo steps aside first,
+   then rows shrink to the smallest allowed, so pinned links and More still show. */
+let hiddenLinks = [];
+function fit() {
+  const app = $("app"), cs = getComputedStyle(app), gap = parseFloat(cs.rowGap) || 8;
+  const photo = app.querySelector('[data-part="photo"]');
+  if (photo) photo.hidden = false;
+  const H = app.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+  const rowsAt = (min) => Math.floor((H + gap) / (min + gap));
+  const pinned = links.filter((l) => l.pin), rest = links.filter((l) => !l.pin);
+  const need = !links.length ? 0 : Math.min(links.length, Math.max(2, pinned.length + 1));
+  let base = fixed, min = MIN;
+  if (rowsAt(MIN) - base < need && photo) { photo.hidden = true; base -= 2; }
+  if (rowsAt(MIN) - base < need) min = FLOOR;
+  const total = base + links.length;
+  const rows = rowsAt(min) >= total ? total : Math.max(base + need, rowsAt(min));
+  const slots = rows - base, all = slots >= links.length, n = all ? links.length : Math.max(0, slots - 1);
+  const keep = new Set(pinned.concat(rest).slice(0, n).map((l) => l.k));
+  hiddenLinks = links.filter((l) => !keep.has(l.k));
+  app.querySelectorAll("a.link.u1[data-k]").forEach((a) => { a.hidden = !keep.has(a.dataset.k); });
+  const more = $("more"); more.hidden = !hiddenLinks.length;
+  $("moreCount").textContent = String(hiddenLinks.length);
+  app.style.setProperty("--units", base + n + (hiddenLinks.length ? 1 : 0));
+  document.documentElement.style.setProperty("--rowh", Math.max((H - gap * (rows - 1)) / rows, MIN) + "px");
+}
+
+function open() {
+  $("sheetList").innerHTML = hiddenLinks.map((l) => row(l)).join("");
+  document.body.classList.add("open");
+}
+function close() { document.body.classList.remove("open"); }
+function share() {
+  const d = { title: C.brand_name || TITLE, url: PREVIEW ? location.href : location.origin + location.pathname + "?p=" + SLUG };
+  if (navigator.share) navigator.share(d).catch(() => {});
+  else if (navigator.clipboard) navigator.clipboard.writeText(d.url).catch(() => {});
+}
+document.addEventListener("click", (e) => {
+  const a = e.target.closest && e.target.closest("[data-k]");
+  if (!a) return;
+  if (a.getAttribute("aria-disabled") === "true" || (PREVIEW && a.tagName === "A")) e.preventDefault();
+  if (a.dataset.k) tap(a.dataset.k);
+});
+$("sheetBg").addEventListener("click", close);
+$("sheetX").addEventListener("click", close);
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
+window.addEventListener("resize", () => { if (!$("app").hidden) fit(); });
+if (window.visualViewport) visualViewport.addEventListener("resize", () => { if (!$("app").hidden) fit(); });
+
+function gone(text) {
+  $("app").hidden = true; $("gone").hidden = false;
+  $("goneText").textContent = text || C.closed_text || DEFAULTS.closed_text;
+  if (LOGO) { $("goneLogo").src = LOGO; $("goneLogo").hidden = false; }
+}
+const ready = () => document.body.classList.remove("loading");
+
+if (TESTLINK) $("test").hidden = false;
+if (PREVIEW) {
+  paint(); ready();
+  window.addEventListener("message", (e) => {
+    if (!e.data || e.data.type !== "ld-preview") return;
+    C = Object.assign({}, DEFAULTS, e.data.config || {}); TITLE = e.data.title || ""; LOGO = e.data.logo || "";
+    close(); paint();
+  });
+  try { parent.postMessage({ type: "ld-ready" }, "*"); } catch (e) {}
+} else if (!SLUG) { gone("This link is not complete."); ready(); }
+else {
+  rpc("ld_open", { p_slug: SLUG }).then((g) => {
+    if (!g) { gone("This page does not exist."); return; }
+    C = Object.assign({}, DEFAULTS, g.config || {}); TITLE = g.title || ""; STATUS = g.status; LOGO = g.logo || "";
+    if (!["live", "testing"].includes(STATUS) && !TESTLINK) { gone(); return; }
+    if (STATUS === "testing") $("test").hidden = false;
+    paint(); tap("open");
+  }).catch(() => gone("This page could not load. Check your connection and try again.")).finally(ready);
+}
+})();
+</script>
+</body>
+</html>
