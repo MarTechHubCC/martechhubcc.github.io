@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="cc-tool-version" content="V1.3 New Jersey">
+<meta name="cc-tool-version" content="V1.4 New Jersey">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="only light">
 <meta name="theme-color" content="#ffffff">
@@ -270,6 +270,16 @@ body.td .mob .mask{display:none}
   .wrap.pic-l .side .logo img{height:34px}
   .wrap.pic-h .side h1{font-size:22px}
 }
+
+/* V1.4 — typing on a phone: while the keyboard is up, the picture steps aside, the form sits at the top
+   and the button rides just above the keyboard (Chirag, 4 Nov) */
+body.kb .app,body.kb .app.pic{position:fixed;left:0;right:0;margin:0 auto;top:var(--kbt,0px);height:var(--kbh,100dvh);
+  display:flex;flex-direction:column;gap:12px;padding:14px var(--pad) 10px}
+body.kb .wrap{display:block!important;width:100vw!important;height:auto!important;border-radius:0!important;box-shadow:none!important}
+body.kb .side{display:none!important}
+body.kb .app .hero,body.kb .app .top,body.kb .app .prog{display:none!important}
+body.kb .app .step{flex:1 1 auto;min-height:0;overflow-y:auto;gap:12px}
+body.kb .app .go{flex:none;height:52px}
 </style>
 </head>
 <body class="loading">
@@ -295,8 +305,8 @@ body.td .mob .mask{display:none}
     </section>
     <section class="step" data-s="2" hidden>
       <div class="q" id="qDetails"></div>
-      <div class="f"><label for="nm" id="nmL"></label><input class="in" id="nm" autocomplete="name" maxlength="80"></div>
-      <div class="f"><label for="mb" id="mbL"></label><div class="mob"><span>+91</span><span class="mbw"><input id="mb" inputmode="numeric" maxlength="11" autocomplete="tel-national" aria-label="Mobile number"><i class="mask dots" id="mbMask" aria-hidden="true"></i></span></div></div>
+      <div class="f"><label for="nm" id="nmL"></label><input class="in" id="nm" autocomplete="name" maxlength="80" enterkeyhint="next"></div>
+      <div class="f"><label for="mb" id="mbL"></label><div class="mob"><span>+91</span><span class="mbw"><input id="mb" inputmode="numeric" maxlength="11" enterkeyhint="go" autocomplete="tel-national" aria-label="Mobile number"><i class="mask dots" id="mbMask" aria-hidden="true"></i></span></div></div>
       <label class="consent"><input type="checkbox" id="ok" checked><span id="consentT"></span></label>
     </section>
     <section class="step" data-s="3" hidden>
@@ -459,6 +469,7 @@ function check() {
   $("#go").innerHTML = last() ? esc(C.book_button || "Book") + ' <i class="ti ti-check"></i>' : esc(C.details_button || "Continue") + ' <i class="ti ti-arrow-right"></i>';
 }
 function go(n) {
+  if (document.activeElement && document.activeElement.blur && String(n) !== "2") document.activeElement.blur();
   n = String(n); if (!ORDER.includes(n)) n = "1";
   step = n; $("#app").scrollLeft = 0; $("#err").hidden = true;
   $$(".step").forEach((s) => s.hidden = s.dataset.s !== n);
@@ -486,6 +497,34 @@ function finish() {
   $("#done").hidden = false;
 }
 $("#go").addEventListener("click", () => { if (!last()) go(next()); else book(); });
+/* V1.4 — Next on the keyboard moves name → mobile; Go on the keyboard presses the button */
+$("#nm").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); $("#mb").focus(); } });
+$("#mb").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); if (!$("#go").disabled) { e.target.blur(); $("#go").click(); } } });
+/* V1.4 — while a box on a phone has the keyboard up, the page fits the space above the keyboard */
+(function () {
+  const vv = window.visualViewport, typing = () => { const a = document.activeElement; return a && (a.id === "nm" || a.id === "mb") && !PREVIEW && phoneSized(); };
+  /* judged by the phone's screen, not the window: the keyboard shrinks the window and must not flip the page to its laptop layout */
+  const phoneSized = () => Math.min(screen.width, screen.height) < 600;
+  let off = 0, tall = 0, turned = screen.width > screen.height;
+  /* the keyboard is up when the visible height drops well below the tallest seen in this orientation */
+  const kbUp = () => {
+    const h = vv ? vv.height : innerHeight, t = screen.width > screen.height;
+    if (t !== turned) { turned = t; tall = 0; }
+    if (!typing() || h > tall) tall = Math.max(tall, h, typing() ? 0 : innerHeight);
+    return h < tall * 0.8;
+  };
+  const fit = () => {
+    const on = typing() && kbUp(); document.body.classList.toggle("kb", on);
+    if (!on) return;
+    const h = vv ? vv.height : innerHeight, t = vv ? vv.offsetTop : 0;
+    document.body.style.setProperty("--kbh", Math.round(h) + "px"); document.body.style.setProperty("--kbt", Math.round(t) + "px");
+  };
+  document.addEventListener("focusin", () => { clearTimeout(off); if (typing()) fit(); else off = setTimeout(fit, 250); });
+  document.addEventListener("focusout", () => { clearTimeout(off); off = setTimeout(fit, 250); });
+  /* pressing the button while typing keeps the box focused, so nothing jumps under the finger */
+  $("#go").addEventListener("mousedown", (e) => { if (document.body.classList.contains("kb")) e.preventDefault(); });
+  if (vv) { vv.addEventListener("resize", fit); vv.addEventListener("scroll", fit); }
+})();
 $("#nm").addEventListener("input", check); $("#ok").addEventListener("change", check);
 $("#mb").addEventListener("input", (e) => { const v = mobile().slice(0, 10); e.target.value = v.length > 5 ? v.slice(0, 5) + " " + v.slice(5) : v; slots(); check(); });
 /* the mobile box shows ten empty slots that fill as the number is typed */
