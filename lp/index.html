@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="cc-tool-version" content="V1.4 New Jersey">
+<meta name="cc-tool-version" content="V1.5 New Jersey">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="only light">
 <meta name="theme-color" content="#ffffff">
@@ -280,6 +280,11 @@ body.kb .side{display:none!important}
 body.kb .app .hero,body.kb .app .top,body.kb .app .prog{display:none!important}
 body.kb .app .step{flex:1 1 auto;min-height:0;overflow-y:auto;gap:12px}
 body.kb .app .go{flex:none;height:52px}
+/* V1.5 — the tick box and the button sit right under the mobile box, well clear of the keyboard */
+body.kb .app .step{flex:0 1 auto}
+body.kb .app .step .consent{margin-top:6px}
+.acts a{text-align:center;line-height:1.15;padding:0 10px}
+.acts a span{min-width:0}
 </style>
 </head>
 <body class="loading">
@@ -322,7 +327,7 @@ body.kb .app .go{flex:none;height:52px}
       <div class="tick"><i class="ti ti-check"></i></div>
       <h2 id="doneT"></h2>
       <div class="card" id="doneCard"></div>
-      <div class="acts" id="acts"><a class="wa" id="waBtn" target="_blank" rel="noopener"><i class="ti ti-brand-whatsapp"></i>WhatsApp us</a><a class="cl" id="callBtn"><i class="ti ti-phone"></i>Call</a></div>
+      <div class="acts" id="acts"><a class="wa" id="waBtn" target="_blank" rel="noopener"><i class="ti ti-brand-whatsapp"></i><span id="waT">Get on-road price</span></a><a class="cl" id="callBtn"><i class="ti ti-phone"></i><span id="callT">Talk to the showroom</span></a></div>
       <div class="fine" id="doneLine"></div>
     </section>
   </main>
@@ -335,7 +340,7 @@ body.kb .app .go{flex:none;height:52px}
 const SB_URL = "https://qsxldzqdjdplffxqdokd.supabase.co", SB_KEY = "sb_publishable_6ng_3jnvQbJUZifYTxmRrw_0yhCZuY9";
 const qs = new URLSearchParams(location.search);
 const SLUG = (qs.get("p") || "").toLowerCase().replace(/[^a-z0-9-]/g, ""), PREVIEW = qs.get("preview") === "1", TESTLINK = qs.get("test") === "1";
-const DEFAULTS = {"brand_name": "", "colour": "#2E3192", "headline": "Book a test drive.", "side_line": "Pick a car and a time. We confirm on WhatsApp.", "chips": "Free\n30 seconds\nYou pick the slot", "hero_image": "", "pic_logo": true, "pic_headline": true, "q_choice": "Which car would you like to drive?", "choice_label": "Car", "choices": "Swift | Hatchback\nDzire | Sedan\nBrezza | SUV\nErtiga | 7 seats\nWagonR | Hatchback\nAlto K10 | Hatchback\nCelerio | Hatchback\nS-Presso | Hatchback", "q_timeframe": "When are you planning to buy?", "timeframe_label": "Plan to buy", "timeframes": "", "q_details": "Who's driving?", "name_label": "Your name", "name_hint": "Full name", "mobile_label": "Mobile number", "consent_text": "I agree to be contacted by {brand} on call, WhatsApp, SMS or email about this test drive.", "privacy_url": "", "details_button": "Continue", "q_when": "When and where?", "days_ahead": 4, "places": "At the showroom | building-store\nAt my home | home", "slots": "Morning | 10 – 1\nAfternoon | 1 – 4\nEvening | 4 – 7", "book_button": "Book my test drive", "done_title": "You're booked, {first}.", "done_line": "We'll confirm the exact time on WhatsApp.", "wa_number": "", "wa_text": "Hi {brand}, about my test drive {ref}.", "call_number": "", "ref_prefix": "REF", "closed_text": "Bookings on this page are closed."};
+const DEFAULTS = {"brand_name": "", "colour": "#2E3192", "headline": "Book a test drive.", "side_line": "Pick a car and a time. We confirm on WhatsApp.", "chips": "Free\n30 seconds\nYou pick the slot", "hero_image": "", "pic_logo": true, "pic_headline": true, "q_choice": "Which car would you like to drive?", "choice_label": "Car", "choices": "Swift | Hatchback\nDzire | Sedan\nBrezza | SUV\nErtiga | 7 seats\nWagonR | Hatchback\nAlto K10 | Hatchback\nCelerio | Hatchback\nS-Presso | Hatchback", "q_timeframe": "When are you planning to buy?", "timeframe_label": "Plan to buy", "timeframes": "", "q_details": "Who's driving?", "name_label": "Your name", "name_hint": "Full name", "mobile_label": "Mobile number", "consent_text": "I agree to be contacted by {brand} on call, WhatsApp, SMS or email about this test drive.", "privacy_url": "", "details_button": "Continue", "q_when": "When and where?", "days_ahead": 4, "places": "At the showroom | building-store\nAt my home | home", "slots": "Morning | 10 – 1\nAfternoon | 1 – 4\nEvening | 4 – 7", "book_button": "Book my test drive", "done_title": "You're booked, {first}.", "done_line": "We'll confirm the exact time on WhatsApp.", "wa_number": "", "wa_text": "Hi {brand}, please share the on-road price of {choice}. My booking ref is {ref}.", "call_number": "", "ref_prefix": "REF", "closed_text": "Bookings on this page are closed.", "wa_label": "Get on-road price", "call_label": "Talk to the showroom"};
 const CHIP_ICONS = ["gift", "clock", "calendar-check", "circle-check"];
 let C = Object.assign({}, DEFAULTS), TITLE = "", STATUS = "live", LOGO = "", TPL = "testdrive";
 /* Test Drive keeps the V1.0 look; Test Ride wears the new one (Chirag, 4 Nov) */
@@ -359,7 +364,7 @@ function rpc(fn, args, keep) {
     .then(async (r) => { const j = await r.json().catch(() => null); if (!r.ok) throw new Error((j && (j.message || j.hint)) || "Something went wrong"); return j; });
 }
 const first = () => $("#nm").value.trim().split(/\s+/)[0] || "";
-const fill = (t) => String(t || "").replace(/\{brand\}/g, C.brand_name || TITLE).replace(/\{first\}/g, first()).replace(/\{ref\}/g, ref);
+const fill = (t) => String(t || "").replace(/\{brand\}/g, C.brand_name || TITLE).replace(/\{first\}/g, first()).replace(/\{ref\}/g, ref).replace(/\{choice\}/g, (typeof d !== "undefined" && d.choice) || "");
 function shade(hex, f) {
   const m = /^#?([0-9a-f]{6})$/i.exec(String(hex || "")); if (!m) return "";
   const n = parseInt(m[1], 16), ch = (v) => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, "0");
@@ -447,6 +452,7 @@ function paint() {
   $("#waBtn").hidden = !wa; $("#callBtn").hidden = !call; $("#acts").hidden = !wa && !call;
   $("#acts").style.gridTemplateColumns = wa && call ? "1fr 1fr" : "1fr";
   $("#callBtn").href = call ? "tel:+" + call : "#";
+  $("#waT").textContent = C.wa_label || "Get on-road price"; $("#callT").textContent = C.call_label || "Talk to the showroom";
   $("#barFill").style.width = ((ORDER.indexOf(step) + 1) * 100 / ORDER.length) + "%";
   check();
 }
