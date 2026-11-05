@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="cc-tool-version" content="V1.6 New Jersey">
+<meta name="cc-tool-version" content="V1.7 New Jersey">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="only light">
 <meta name="theme-color" content="#ffffff">
@@ -298,9 +298,10 @@ body.tr .app.pic.hp-free .hero h1{margin-top:var(--hy,0px);margin-bottom:auto}
 body.tr.pv .app.pic .hero h1{cursor:grab;touch-action:none;outline:1.5px dashed transparent;outline-offset:6px;border-radius:6px}
 body.tr.pv .app.pic .hero h1:hover,body.tr.pv .app.pic .hero h1.drag{outline-color:rgba(255,210,87,.9)}
 body.tr.pv .app.pic .hero h1.drag{cursor:grabbing}
-body.tr .models.rich button[data-plain]{justify-self:center;align-self:center;border:1.5px solid var(--line);border-radius:999px;padding:9px 26px;min-height:0;height:auto;background:#fff}
+body.tr .models.rich button[data-plain]{justify-content:center;text-align:center;border:1.5px solid var(--ink);border-left-width:1.5px;border-radius:14px;padding:0 14px;min-height:0;height:52px;background:#f4f4f6}
 body.tr .models.rich button[data-plain] .l em,body.tr .models.rich button[data-plain] .l small{display:none}
-body.tr .models.rich button[data-plain] .l b{font-size:14px;font-weight:600}
+body.tr .models.rich button[data-plain] .l{align-items:center}
+body.tr .models.rich button[data-plain] .l b{font-size:15px;font-weight:700}
 body.tr .models.rich button[data-plain].on{border-color:var(--brand);box-shadow:inset 0 0 0 1px var(--brand)}
 body.tr .models.frames{align-content:start;grid-auto-rows:auto;gap:12px;padding-top:6px}
 body.tr .models.frames button{position:relative;height:56px;padding:0 16px;font-size:15.5px;overflow:visible}
@@ -367,6 +368,8 @@ const SLUG = (qs.get("p") || "").toLowerCase().replace(/[^a-z0-9-]/g, ""), PREVI
 const DEFAULTS = {"brand_name": "", "colour": "#2E3192", "headline": "Book a test drive.", "side_line": "Pick a car and a time. We confirm on WhatsApp.", "chips": "Free\n30 seconds\nYou pick the slot", "hero_image": "", "pic_logo": true, "pic_headline": true, "q_choice": "Which car would you like to drive?", "choice_label": "Car", "choices": "Swift | Hatchback\nDzire | Sedan\nBrezza | SUV\nErtiga | 7 seats\nWagonR | Hatchback\nAlto K10 | Hatchback\nCelerio | Hatchback\nS-Presso | Hatchback", "q_timeframe": "When are you planning to buy?", "timeframe_label": "Plan to buy", "timeframes": "", "q_details": "Who's driving?", "name_label": "Your name", "name_hint": "Full name", "mobile_label": "Mobile number", "consent_text": "I agree to be contacted by {brand} on call, WhatsApp, SMS or email about this test drive.", "privacy_url": "", "details_button": "Continue", "q_when": "When and where?", "days_ahead": 4, "places": "At the showroom | building-store\nAt my home | home", "slots": "Morning | 10 – 1\nAfternoon | 1 – 4\nEvening | 4 – 7", "book_button": "Book my test drive", "done_title": "You're booked, {first}.", "done_line": "We'll confirm the exact time on WhatsApp.", "wa_number": "", "wa_text": "Hi {brand}, please share the on-road price of {choice}. My booking ref is {ref}.", "call_number": "", "ref_prefix": "REF", "closed_text": "Bookings on this page are closed.", "wa_label": "Get on-road price", "call_label": "Talk to the showroom"};
 const CHIP_ICONS = ["gift", "clock", "calendar-check", "circle-check"];
 let C = Object.assign({}, DEFAULTS), TITLE = "", STATUS = "live", LOGO = "", TPL = "testdrive";
+/* V1.7 — a logo uploaded in Setup wins over the Client Centre one */
+const upLogo = (c) => /^data:image\/(png|jpeg|webp);base64,/.test((c && c.logo_image) || "") ? c.logo_image : "";
 /* Test Drive keeps the V1.0 look; Test Ride wears the new one (Chirag, 4 Nov) */
 function setTpl(t) { TPL = t === "testride" ? "testride" : "testdrive"; document.body.classList.toggle("tr", TPL === "testride"); document.body.classList.toggle("td", TPL !== "testride"); }
 setTpl("testdrive");
@@ -615,7 +618,7 @@ if (PREVIEW) {
   paint(); ready();
   window.addEventListener("message", (e) => {
     if (!e.data) return;
-    if (e.data.type === "lp-preview") { C = Object.assign({}, DEFAULTS, e.data.config || {}); TITLE = e.data.title || ""; LOGO = e.data.logo || ""; setTpl(e.data.template); paint(); }
+    if (e.data.type === "lp-preview") { C = Object.assign({}, DEFAULTS, e.data.config || {}); TITLE = e.data.title || ""; LOGO = upLogo(C) || e.data.logo || ""; setTpl(e.data.template); paint(); }
     if (e.data.type === "lp-goto") { const s = e.data.step;
       $("#done").hidden = true; ["#hero", "#prog", "#go"].forEach((x) => $(x).hidden = false);
       if (s === "done") { if (!d.choice) d.choice = (pairs(C.choices)[0] || [""])[0]; if (!$("#nm").value) $("#nm").value = "Riya Shah";
@@ -627,7 +630,7 @@ if (PREVIEW) {
 else {
   rpc("lp_open", { p_slug: SLUG }).then((g) => {
     if (!g) { gone("This page does not exist."); return; }
-    C = Object.assign({}, DEFAULTS, g.config || {}); TITLE = g.title || ""; STATUS = g.status; LOGO = g.logo || ""; setTpl(g.template);
+    C = Object.assign({}, DEFAULTS, g.config || {}); TITLE = g.title || ""; STATUS = g.status; LOGO = upLogo(C) || g.logo || ""; setTpl(g.template);
     if (!["live", "testing"].includes(STATUS) && !TESTLINK) { gone(); return; }
     if (STATUS === "testing") $("#test").hidden = false;
     paint(); rpc("lp_visit", { p_slug: SLUG, p_test: TESTLINK }, true).catch(() => {});
